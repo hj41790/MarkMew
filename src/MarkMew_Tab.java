@@ -139,4 +139,12 @@ public class MarkMew_Tab extends JPanel{
     public void setIndex(int index) {
         this.index = index;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent(){
+        return textEditor.getText();
+    }
 }
