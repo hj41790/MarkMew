@@ -14,6 +14,9 @@ public class MainFrame {
 
         componentSetting();
 
+        MarkMew_Parser parser = new MarkMew_Parser(this);
+        new Timer(100, parser).start();
+
         JFrame frame = new JFrame("MarkMew");
         frame.setSize(1000,600);
         frame.setContentPane(panel_main);
