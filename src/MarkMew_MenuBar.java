@@ -24,11 +24,7 @@ public class MarkMew_MenuBar extends JMenuBar {
         item_Close = new JMenuItem("Close");
         item_Exit = new JMenuItem("Exit");
 
-        item_Export = new JMenu("Export...");
-        item_Export_html = new JMenuItem("HTML");
-        item_Export_txt = new JMenuItem("Text File");
-        item_Export.add(item_Export_html);
-        item_Export.add(item_Export_txt);
+        item_Export_html = new JMenuItem("Export As HTML");
 
         menu_File.add(item_New);
         menu_File.add(item_Open);
@@ -37,7 +33,7 @@ public class MarkMew_MenuBar extends JMenuBar {
         menu_File.add(item_Save);
         menu_File.add(item_Save_As);
         menu_File.addSeparator();
-        menu_File.add(item_Export);
+        menu_File.add(item_Export_html);
         menu_File.addSeparator();
         menu_File.add(item_Exit);
 
@@ -88,8 +84,58 @@ public class MarkMew_MenuBar extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MarkMew_Tab tab = (MarkMew_Tab) tabbedPane.getSelectedComponent();
-                if(!tab.getIsSaved()){
-                    // ask whether save or not
+
+                if ((tab.hasFile() && !tab.getIsSaved()) || (!tab.hasFile() && tab.hasContent())) {
+                    int result = JOptionPane.showConfirmDialog(null,
+                            "Content has modified, save changes?",
+                            "Save Changed?",
+                            JOptionPane.YES_NO_OPTION);
+
+                    if (result == JOptionPane.YES_OPTION) {
+
+                        if(tab.hasFile()) {
+                            tab.saveFile(null);
+                            tabbedPane.remove(tabbedPane.getSelectedIndex());
+
+                            // update indexing
+                            int count = tabbedPane.getTabCount();
+                            for(int i=0; i<count; i++){
+                                ((MarkMew_Tab)tabbedPane.getComponentAt(i)).setIndex(i);
+                            }
+
+                            stateLabel.setText("Selected tab is removed");
+                            return;
+                        }
+
+                        String[] filter_desc = new String[]{"Markdown File (*.md)", "Text File (*.txt)"};
+                        String[] filter_ext = new String[]{"md", "txt"};
+
+                        JFileChooser saveDialog = new JFileChooser();
+                        saveDialog.setAcceptAllFileFilterUsed(false);
+                        for (int i = 0; i < filter_desc.length; i++)
+                            saveDialog.addChoosableFileFilter(new FileNameExtensionFilter(filter_desc[i], filter_ext[i]));
+
+                        if (saveDialog.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+
+                            if (saveDialog.getSelectedFile().exists()) {
+                                int confirm = JOptionPane.showConfirmDialog(null,
+                                        "Do you want to overwrite the file?",
+                                        "File Duplication",
+                                        JOptionPane.YES_NO_OPTION);
+
+                                if (confirm != JOptionPane.YES_OPTION) return;
+                            }
+
+                            // get file path
+                            String path = saveDialog.getSelectedFile().getAbsolutePath();
+                            String extension = ((FileNameExtensionFilter) saveDialog.getFileFilter()).getExtensions()[0];
+                            if (!path.endsWith(extension))
+                                path += "." + extension;
+
+                            tab.saveFile(path);
+                        }
+                    }
+
                 }
 
                 // remove tab
@@ -101,7 +147,7 @@ public class MarkMew_MenuBar extends JMenuBar {
                     ((MarkMew_Tab)tabbedPane.getComponentAt(i)).setIndex(i);
                 }
 
-                stateLabel.setText("Select tab is removed");
+                stateLabel.setText("Selected tab is removed");
             }
         });
 
@@ -109,6 +155,58 @@ public class MarkMew_MenuBar extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // ask whether save or not about all tabs
+
+                for(int i=0; i<tabbedPane.getTabCount(); i++){
+                    MarkMew_Tab tab = (MarkMew_Tab) tabbedPane.getComponentAt(0);
+                    tabbedPane.setSelectedIndex(0);
+
+                    if ((tab.hasFile() && !tab.getIsSaved()) || (!tab.hasFile() && tab.hasContent())) {
+                        int result = JOptionPane.showConfirmDialog(null,
+                                tab.getTitle() + " has modified, save changes?",
+                                "Save Changed?",
+                                JOptionPane.YES_NO_OPTION);
+
+                        if (result == JOptionPane.YES_OPTION) {
+
+                            if(tab.hasFile()) {
+                                tab.saveFile(null);
+                                tabbedPane.remove(0);
+                                return;
+                            }
+
+                            String[] filter_desc = new String[]{"Markdown File (*.md)", "Text File (*.txt)"};
+                            String[] filter_ext = new String[]{"md", "txt"};
+
+                            JFileChooser saveDialog = new JFileChooser();
+                            saveDialog.setAcceptAllFileFilterUsed(false);
+                            for (int j = 0; j < filter_desc.length; j++)
+                                saveDialog.addChoosableFileFilter(new FileNameExtensionFilter(filter_desc[j], filter_ext[j]));
+
+                            if (saveDialog.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+
+                                if (saveDialog.getSelectedFile().exists()) {
+                                    int confirm = JOptionPane.showConfirmDialog(null,
+                                            "Do you want to overwrite the file?",
+                                            "File Duplication",
+                                            JOptionPane.YES_NO_OPTION);
+
+                                    if (confirm != JOptionPane.YES_OPTION) return;
+                                }
+
+                                // get file path
+                                String path = saveDialog.getSelectedFile().getAbsolutePath();
+                                String extension = ((FileNameExtensionFilter) saveDialog.getFileFilter()).getExtensions()[0];
+                                if (!path.endsWith(extension))
+                                    path += "." + extension;
+
+                                tab.saveFile(path);
+                            }
+                        }
+
+                    }
+
+                    tabbedPane.remove(0);
+                }
 
                 System.exit(0);
             }
@@ -230,15 +328,12 @@ public class MarkMew_MenuBar extends JMenuBar {
     private JMenu menu_File;
     private JMenu menu_Edit;
 
-    private JMenu item_Export;
-
     private JMenuItem item_New;
     private JMenuItem item_Open;
     private JMenuItem item_Save;
     private JMenuItem item_Save_As;
     private JMenuItem item_Close;
     private JMenuItem item_Export_html;
-    private JMenuItem item_Export_txt;
     private JMenuItem item_Exit;
 
     private JMenuItem item_Undo;
