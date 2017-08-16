@@ -18,7 +18,20 @@ public class MarkMew_Parser implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String content = ((MarkMew_Tab)tabbedPane.getSelectedComponent()).getContent();
-        webView.setText(content);
+        MarkMew_Tab tab = (MarkMew_Tab) tabbedPane.getSelectedComponent();
+        if (tab == null) {
+            webView.setText("");
+            return;
+        }
+
+        String content = parser(tab.getContent());
+        try {
+            webView.setText(content);
+        }
+        catch(RuntimeException e1){
+            e1.printStackTrace();
+            System.out.println("try-catch");
+            return;
+        }
     }
 }
