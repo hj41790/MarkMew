@@ -78,8 +78,9 @@ public class MarkMew_Parser implements ActionListener{
             if(ch=='\n'){
 
                 if(header){
-                    builder.append("</><hr>\n");
+                    builder.append("</h"+hCount+"><hr>\n");
                     header = false;
+                    hCount = 0;
                 }
                 else{
                     nlCount++;
@@ -106,7 +107,6 @@ public class MarkMew_Parser implements ActionListener{
                 if(start && hCount>0 && hCount<7){
                     header = true;
                     builder.append("<h"+hCount+">");
-                    hCount = 0;
                 }
                 else{
                     builder.append(ch);
@@ -115,7 +115,7 @@ public class MarkMew_Parser implements ActionListener{
                 start = false;
             }
             else{
-                if(hCount>0){
+                if(!header && hCount>0){
                     String tmp = "";
                     for(int i=0; i<hCount; i++) tmp+="#";
                     builder.append(tmp);
@@ -129,7 +129,7 @@ public class MarkMew_Parser implements ActionListener{
         }
 
         if(header)
-            builder.append("</><hr>\n");
+            builder.append("</h"+hCount+"><hr>\n");
 
         return builder.toString();
     }
