@@ -64,13 +64,74 @@ public class MarkMew_Parser implements ActionListener{
 
     }
 
-    private String parser(String content){
-        String result = "" + content;
+    public String parser(String content){
+        StringBuilder builder = new StringBuilder();
 
+        boolean header = false; // is current line a header?
+        boolean start = true;   // is this start of line?
+        int nlCount = 0;        // new line count
+        int hCount = 0;         // header '#' count
 
+        char[] contentArr = content.toCharArray();
+        for(char ch : contentArr){
 
+            if(ch=='\n'){
 
-        return result;
+                if(header){
+                    builder.append("</><hr>\n");
+                    header = false;
+                }
+                else{
+                    nlCount++;
+                    if(nlCount==2) {
+                        builder.append("<br>\n");
+                        nlCount = 0;
+                    }
+                }
+
+                start = true;
+            }
+            else if(ch=='#'){
+
+                if(start){
+                    hCount++;
+                }
+                else{
+                    builder.append(ch);
+                }
+
+            }
+            else if(ch==' '){
+
+                if(start && hCount>0 && hCount<7){
+                    header = true;
+                    builder.append("<h"+hCount+">");
+                    hCount = 0;
+                }
+                else{
+                    builder.append(ch);
+                }
+
+                start = false;
+            }
+            else{
+                if(hCount>0){
+                    String tmp = "";
+                    for(int i=0; i<hCount; i++) tmp+="#";
+                    builder.append(tmp);
+                    hCount = 0;
+                }
+
+                start = false;
+                builder.append(ch);
+            }
+
+        }
+
+        if(header)
+            builder.append("</><hr>\n");
+
+        return builder.toString();
     }
 
     public void settingCSS(boolean size){
@@ -85,7 +146,6 @@ public class MarkMew_Parser implements ActionListener{
         styleSheet.addRule("h4 {font-size:"+(35*offset)+"; font-weight:bold}");
         styleSheet.addRule("h5 {font-size:"+(30*offset)+"; font-weight:bold}");
         styleSheet.addRule("h6 {font-size:"+(25*offset)+"; font-weight:bold}");
-        styleSheet.addRule("div {height: +"+(10*offset)+"px; font-size:0px; background:#DEDEDE; padding:"+(2*offset)+"; margin-top:"+(15*offset)+"; margin-bottom:"+(15*offset)+"}");
 
         editorKit = new HTMLEditorKit();
         editorKit.setStyleSheet(styleSheet);
