@@ -3,6 +3,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class MarkMew_MenuBar extends JMenuBar {
 
@@ -319,6 +321,51 @@ public class MarkMew_MenuBar extends JMenuBar {
                     ((MarkMew_Tab) tabbedPane.getSelectedComponent()).saveFile(path);
 
                     stateLabel.setText("Saved successfully on" + path);
+                }
+            }
+        });
+
+        item_Export_html.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                MarkMew_Tab currentTab = (MarkMew_Tab)tabbedPane.getSelectedComponent();
+                if(currentTab==null) return;
+
+
+                JFileChooser saveDialog = new JFileChooser();
+                saveDialog.setAcceptAllFileFilterUsed(false);
+                saveDialog.addChoosableFileFilter(new FileNameExtensionFilter("HTML File (*.html)", "html"));
+
+                if(saveDialog.showSaveDialog(null)==JFileChooser.APPROVE_OPTION) {
+
+                    if (saveDialog.getSelectedFile().exists()) {
+                        int result = JOptionPane.showConfirmDialog(null,
+                                "Do you want to overwrite the file?",
+                                "File Duplication",
+                                JOptionPane.YES_NO_OPTION);
+
+                        if (result != JOptionPane.YES_OPTION) return;
+                    }
+
+                    // get file path
+                    String path = saveDialog.getSelectedFile().getAbsolutePath();
+                    String extension = ((FileNameExtensionFilter) saveDialog.getFileFilter()).getExtensions()[0];
+                    if (!path.endsWith(extension))
+                        path += "." + extension;
+
+                    String content = frame.getParser().parser(currentTab.getContent());
+                    try {
+                        File file = new File(path);
+                        FileWriter fw = new FileWriter(file);
+                        fw.write(content);
+                        fw.close();
+                    }
+                    catch (IOException e1){
+                        e1.printStackTrace();
+                    }
+
+                    stateLabel.setText("Saved successfully on " + path);
                 }
             }
         });

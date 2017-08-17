@@ -14,7 +14,7 @@ public class MainFrame {
     private JButton btn_zoomOut;
     private JScrollPane scrollPane;
 
-    MarkMew_Parser parser;
+    private MarkMew_Parser parser;
 
     MainFrame(){
 
@@ -66,6 +66,7 @@ public class MainFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 parser.settingCSS(true);
+                stateLabel.setText("Zoom In WebView");
             }
         });
 
@@ -73,6 +74,7 @@ public class MainFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 parser.settingCSS(false);
+                stateLabel.setText("Zoom Out WebView");
             }
         });
 
@@ -85,6 +87,9 @@ public class MainFrame {
 
     }
 
+    public MarkMew_Parser getParser() {
+        return parser;
+    }
 
     public JTabbedPane getTabbedPane() {
         return tabbedPane;
