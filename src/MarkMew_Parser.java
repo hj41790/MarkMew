@@ -30,21 +30,49 @@ public class MarkMew_Parser implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         MarkMew_Tab tab = (MarkMew_Tab) tabbedPane.getSelectedComponent();
         if (tab == null) {
             webView.setText("");
             return;
         }
+        if(!tab.isUpdate()) return;
 
-        String content = parser(tab.getContent());
+        content = parser(tab.getContent());
         try {
+
+            Point p = scrollPane.getViewport().getViewPosition();
             webView.setText(content);
+
+            // maintain vertical scroll position
+            SwingUtilities.invokeLater(new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    scrollPane.getViewport().setViewPosition(p);
+                }
+            });
+
         }
         catch(RuntimeException e1){
             e1.printStackTrace();
-            System.out.println("try-catch");
             return;
         }
+        finally {
+            tab.setUpdate(false);
+        }
+
+    }
+
+    private String parser(String content){
+        String result = "" + content;
+
+
+
+
+        return result;
+    }
+
     public void settingCSS(boolean size){
         if(size) offset += 0.1;
         else offset -= 0.1;

@@ -13,6 +13,7 @@ public class MarkMew_Tab extends JPanel{
     private int index;
 
     private boolean isSaved;
+    private boolean update;
 
     private File file;
     private FileReader fileReader;
@@ -27,6 +28,7 @@ public class MarkMew_Tab extends JPanel{
         parent = _parent;
         title = _title;
 
+        update = false;
         isSaved = false;
         file = null;
 
@@ -42,18 +44,19 @@ public class MarkMew_Tab extends JPanel{
             @Override
             public void insertUpdate(DocumentEvent e) {
                 unsaveFile();
-
+                update = true;
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 unsaveFile();
-
+                update = true;
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
                 unsaveFile();
+                update = true;
             }
         });
     }
@@ -146,5 +149,13 @@ public class MarkMew_Tab extends JPanel{
 
     public String getContent(){
         return textEditor.getText();
+    }
+
+    public boolean isUpdate() {
+        return update;
+    }
+
+    public void setUpdate(boolean update) {
+        this.update = update;
     }
 }
