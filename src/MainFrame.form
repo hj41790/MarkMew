@@ -38,11 +38,12 @@
             <border type="none"/>
             <children/>
           </tabbedpane>
-          <scrollpane id="898fc">
+          <scrollpane id="898fc" binding="scrollPane">
             <constraints>
               <splitpane position="right"/>
             </constraints>
             <properties>
+              <autoscrolls value="false"/>
               <horizontalScrollBarPolicy value="31"/>
               <minimumSize width="0" height="0"/>
               <preferredSize width="0" height="0"/>
@@ -52,25 +53,48 @@
               <component id="a38a5" class="javax.swing.JEditorPane" binding="webView">
                 <constraints/>
                 <properties>
+                  <autoscrolls value="false"/>
                   <contentType value="text/html"/>
-                  <dragEnabled value="false"/>
+                  <dragEnabled value="true"/>
                   <editable value="false"/>
                   <enabled value="true"/>
-                  <focusable value="false"/>
+                  <focusable value="true"/>
                   <font size="20"/>
                   <margin top="3" left="10" bottom="3" right="10"/>
                   <minimumSize width="0" height="0"/>
                   <preferredSize width="0" height="0"/>
-                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;&#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;p style=&quot;margin-top: 0&quot;&gt;&#13;&#10;      &#13;&#10;    &lt;/p&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
+                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
                 </properties>
                 <clientProperties>
                   <JEditorPane.honorDisplayProperties class="java.lang.Boolean" value="true"/>
+                  <charset class="java.lang.String" value=""/>
                 </clientProperties>
               </component>
             </children>
           </scrollpane>
         </children>
       </splitpane>
+      <grid id="595" binding="panel_top" layout-manager="FlowLayout" hgap="5" vgap="1" flow-align="2">
+        <constraints border-constraint="North"/>
+        <properties>
+          <name value=""/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="698b5" class="javax.swing.JButton" binding="btn_zoomIn">
+            <constraints/>
+            <properties>
+              <text value="Zoom In"/>
+            </properties>
+          </component>
+          <component id="8cb10" class="javax.swing.JButton" binding="btn_zoomOut">
+            <constraints/>
+            <properties>
+              <text value="Zoom Out"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
     </children>
   </grid>
 </form>

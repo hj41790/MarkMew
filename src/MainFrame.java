@@ -3,18 +3,25 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.event.*;
 
 public class MainFrame {
+    private JPanel panel_top;
     private JPanel panel_main;
     private JPanel panel_bottom;
     private JTabbedPane tabbedPane;
     private JSplitPane splitPane;
     private JLabel stateLabel;
     private JEditorPane webView;
+    private JButton btn_zoomIn;
+    private JButton btn_zoomOut;
+    private JScrollPane scrollPane;
+
+    MarkMew_Parser parser;
 
     MainFrame(){
 
+
         componentSetting();
 
-        MarkMew_Parser parser = new MarkMew_Parser(this);
+        parser = new MarkMew_Parser(this);
         Timer timer = new Timer(100, parser);
         timer.start();
 
@@ -54,6 +61,22 @@ public class MainFrame {
             }
         });
 
+        // button setting
+        btn_zoomIn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parser.settingCSS(true);
+            }
+        });
+
+        btn_zoomOut.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parser.settingCSS(false);
+            }
+        });
+
+
         // state bar setting
         panel_bottom.setBorder(BorderFactory.createEmptyBorder(4, 6, 4, 6));
         stateLabel.setText("Hello, MarkMew!");
@@ -75,4 +98,7 @@ public class MainFrame {
         return webView;
     }
 
+    public JScrollPane getScrollPane() {
+        return scrollPane;
+    }
 }
